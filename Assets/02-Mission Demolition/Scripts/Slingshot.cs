@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class Slingshot : MonoBehaviour
 {
-    void OnMouseEnter() 
+    public GameObject launchPoint;
+    void Awake() 
     {
-        print("Slingshot:OnMouseEnter()");
+        Transform launchPointTrans = transform.Find("LaunchPoint"); // a 
+        launchPoint = launchPointTrans.gameObject;
+        launchPoint.SetActive( false ); // b
+    }
+    void OnMouseEnter() 
+    { //print("Slingshot:OnMouseEnter()");
+        launchPoint.SetActive( true ); // b 
     }
     void OnMouseExit() 
-    {
-        print("Slingshot:OnMouseExit()");
+    { 
+        //print("Slingshot:OnMouseExit()"); 
+        launchPoint.SetActive( false ); // b }
     }
 }
