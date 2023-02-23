@@ -1,0 +1,101 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+
+public class Player : MonoBehaviour
+{
+    public float speed = 0;
+
+    private Rigidbody rb;
+
+    private float movementX;
+    private float movementY;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void OnMove(InputValue movementValue)
+    {
+        Vector2 movementVector = movementValue.Get<Vector2>();
+
+        movementX = movementVector.x;
+        movementY = movementVector.y;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+
+        rb.AddForce(movement * speed);
+    }
+
+    static private Player S;
+    [Header("Set in Inspector")] // a
+    public GameObject prefabProjectile;
+    public float velocityMult = 8f;
+    [Header("Set Dynamically")] // a
+    public GameObject launchPoint;
+    public Vector3 launchPos;
+    public GameObject projectile;
+    public bool aimingMode;
+    private Rigidbody projectileRigidbody;
+    static public Vector3 LAUNCH_POS {
+        get {
+            if (S == null ) return Vector3.zero;
+            return S.launchPos;
+        }
+    }
+    void Awake() 
+    {
+        S = this;
+        Transform launchPointTrans = transform.Find("LaunchPoint"); // a 
+        launchPoint = launchPointTrans.gameObject;
+        launchPoint.SetActive( false ); // b
+        launchPos = launchPointTrans.position;
+    }
+    void OnMouseEnter() 
+    { //print("Slingshot:OnMouseEnter()");
+        launchPoint.SetActive( true ); // b 
+    }
+    void OnMouseExit() 
+    { 
+        //print("Slingshot:OnMouseExit()"); 
+        launchPoint.SetActive( false ); // b }
+    }
+    void OnMouseDown() {
+        aimingMode = true;
+        projectile = Instantiate( prefabProjectile ) as GameObject;
+        projectile.transform.position = launchPos;
+        projectileRigidbody = projectile.GetComponent<Rigidbody>();
+        projectileRigidbody.isKinematic = true;
+    }
+    void Update() {
+        if (!aimingMode) return;
+        Vector3 mousePos2D = Input.mousePosition;
+        mousePos2D.z = -Camera.main.transform.position.z;
+        Vector3 mousePos3D = Camera.main.ScreenToWorldPoint( mousePos2D );
+        Vector3 mouseDelta = mousePos3D-launchPos;
+        float maxMagnitude = this.GetComponent<SphereCollider>().radius;
+        if (mouseDelta.magnitude > maxMagnitude) {
+            mouseDelta.Normalize();
+            mouseDelta *= maxMagnitude;
+        }
+        Vector3 projPos = launchPos + mouseDelta;
+        projectile.transform.position = projPos;
+        if ( Input.GetMouseButtonUp(0) ) {
+            aimingMode = false;
+            projectileRigidbody.isKinematic = false;
+            projectileRigidbody.velocity = -mouseDelta * velocityMult;
+            FollowCam.POI = projectile;
+            projectile = null;
+            MissionDemolition.ShotFired();
+            ProjectileLine.S.poi = projectile;
+        }
+    }
+
+}
