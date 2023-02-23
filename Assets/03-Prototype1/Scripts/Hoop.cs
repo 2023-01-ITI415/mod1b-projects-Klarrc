@@ -6,7 +6,7 @@ public class Hoop : MonoBehaviour
 {
     public float        speed = 1f;
     public float        upAndDownEdge = 6.7f;
-    public float chanceToChangeDirection;
+    public float chanceToChangeDirections;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +24,8 @@ public class Hoop : MonoBehaviour
             speed = Mathf.Abs(speed);
         } else if ( pos.y > upAndDownEdge ) {
             speed = -Mathf.Abs(speed);
+        } else if (Random.value < chanceToChangeDirections ) {
+            speed *= -1;
         }
     }
 }
