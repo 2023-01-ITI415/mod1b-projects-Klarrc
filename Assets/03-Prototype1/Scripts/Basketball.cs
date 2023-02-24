@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Basketball : MonoBehaviour
 {
-    public static float bottomY = -10f;
+    public static float bottomY = -8.9f;
     // Start is called before the first frame update
     void Start()
     {
