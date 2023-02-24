@@ -5,7 +5,7 @@ using UnityEngine;
 public class Cloud : MonoBehaviour
 {
 	[Header("Set in Inspector")]
-	public GameObject 	cloudSphere;
+	public GameObject 	CloudSphere;
 	public int 	numSpheresMin = 6;
 	public int 	numSpheresMax = 10;
 	public Vector3 	sphereOffsetScale = new Vector3(5,2,1);
@@ -23,7 +23,7 @@ public class Cloud : MonoBehaviour
 
         int num = Random.Range(numSpheresMin, numSpheresMax);
         for(int i = 0; i<num; i++) {
-        	GameObject sp = Instantiate<GameObject>(cloudSphere);
+        	GameObject sp = Instantiate<GameObject>(CloudSphere);
         	spheres.Add(sp);
         	Transform spTrans = sp.transform;
         	spTrans.SetParent(this.transform);
