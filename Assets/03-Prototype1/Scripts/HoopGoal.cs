@@ -20,6 +20,7 @@ public class HoopGoal : MonoBehaviour
             count = count + 1;
 
             SetCountText ();
+            other.gameObject.SetActive(false);
 
 			
             
